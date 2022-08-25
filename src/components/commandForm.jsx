@@ -28,18 +28,20 @@ import "bootstrap/dist/css/bootstrap.css";
 
 export default function EnterCommandForm(props) {
     const [command, setCommand] = useState("");
+    const clearCommand = () => setCommand("");
+    const onInput = event =>{ setCommand(event.target.value.toLowerCase())}
+
+    const onSubmit = (event, {callCommand, setIsTypingDone, isTypingDone}) =>{
+        event.preventDefault();
+        callCommand(command);
+        clearCommand();
+        setIsTypingDone(!isTypingDone);
+    }
 
     return (
         <form
             className="form-inline d-flex align-items-center col-sm-12 col-md-6"
-            onSubmit={(event) => {
-                event.preventDefault();
-                props.callCommand(command);
-
-                // clear the input box.
-                setCommand("");
-                props.setIsTypingDone(!props.isTypingDone)
-            }}
+            onSubmit={onSubmit}
         >
             <label
                 htmlFor="commandId"
@@ -56,9 +58,7 @@ export default function EnterCommandForm(props) {
                 autoFocus
                 spellCheck="false"
                 value={command}
-                onChange={(event) => {
-                    setCommand(event.target.value.toLowerCase());
-                }}
+                onChange={onInput}
             />
 
             <button
